@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
-import { createUser, findUserByEmail } from '../models/userModel'
+import { createUser, findUserByEmail, findUserById } from '../models/userModel'
 import { signToken } from '../utils/jwt'
 
 // POST /api/auth/register
@@ -65,6 +65,30 @@ export async function login(req: Request, res: Response) {
     return res.status(200).json({ message: 'Login berhasil', token, user: safeUser })
   } catch (err) {
     console.error('Login error:', err)
+    return res.status(500).json({ message: 'Terjadi kesalahan server' })
+  }
+}
+
+// GET /api/auth/me  (butuh token -> lewat authMiddleware dulu)
+export async function me(req: Request, res: Response) {
+  try {
+    // req.user udah diisi sama authMiddleware (id + role dari token)
+    if (!req.user) {
+      return res.status(401).json({ message: 'Token tidak valid' })
+    }
+
+    // Ambil profil terbaru dari DB pakai id di token
+    const user = await findUserById(req.user.id)
+    if (!user) {
+      // Token valid tapi user-nya udah kehapus dari DB
+      return res.status(404).json({ message: 'User tidak ditemukan' })
+    }
+
+    // Balikin profil TANPA password_hash
+    const { password_hash: _, ...safeUser } = user
+    return res.status(200).json({ user: safeUser })
+  } catch (err) {
+    console.error('Me error:', err)
     return res.status(500).json({ message: 'Terjadi kesalahan server' })
   }
 }

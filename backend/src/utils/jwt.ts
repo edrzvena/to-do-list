@@ -19,3 +19,14 @@ export function signToken(payload: JwtPayload): string {
 
   return jwt.sign(payload, secret, { expiresIn } as jwt.SignOptions)
 }
+
+// Cek "cap" token asli apa nggak. Kalau asli -> balikin isinya (id + role).
+// Kalau palsu/expired -> jwt.verify otomatis LEMPAR error (ditangkep satpam).
+export function verifyToken(token: string): JwtPayload {
+  const secret = process.env.JWT_SECRET
+  if (!secret) {
+    throw new Error('JWT_SECRET belum di-set di .env')
+  }
+
+  return jwt.verify(token, secret) as JwtPayload
+}

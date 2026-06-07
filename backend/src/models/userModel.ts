@@ -10,6 +10,15 @@ export async function findUserByEmail(email: string): Promise<User | null> {
   return result.rows[0] ?? null
 }
 
+// Cari user berdasarkan id (buat /me: ambil profil terbaru dari id di token)
+export async function findUserById(id: number): Promise<User | null> {
+  const result = await pool.query<User>(
+    'SELECT * FROM users WHERE id = $1',
+    [id]
+  )
+  return result.rows[0] ?? null
+}
+
 // Simpan user baru ke database
 export async function createUser(input: CreateUserInput): Promise<User> {
   const { name, email, password_hash, role = 'member', team_id = null } = input
