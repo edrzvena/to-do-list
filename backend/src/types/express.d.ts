@@ -6,7 +6,7 @@ import { JwtPayload } from '../utils/jwt'
 declare global {
   namespace Express {
     interface Request {
-      user?: JwtPayload
+      user?: JwtPayload // <- "Express, Request lo gw tambahin properti user ya"
     }
   }
 }

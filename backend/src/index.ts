@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import './config/db'                       // jalanin koneksi DB pas server nyala
 import authRoutes from './routes/authRoutes'
+import taskRoutes from './routes/taskRoutes'
 
 dotenv.config()
 
@@ -18,6 +19,9 @@ app.get('/', (req: Request, res: Response) => {
 
 // Semua route auth diawali /api/auth  -> jadi register = /api/auth/register
 app.use('/api/auth', authRoutes)
+
+// Semua route task diawali /api/tasks  -> jadi list task = GET /api/tasks
+app.use('/api/tasks', taskRoutes)
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`)

@@ -19,3 +19,20 @@ export interface CreateUserInput {
   role?: UserRole
   team_id?: number | null
 }
+
+export type TaskPriority = 'low' | 'medium' | 'high'
+export type TaskStatus = 'pending' | 'in_progress' | 'done'
+
+// Bentuk data task persis seperti di tabel `tasks`
+export interface Task {
+  id: number
+  title: string
+  description: string | null
+  priority: TaskPriority
+  status: TaskStatus
+  deadline: Date | null
+  assignee_id: number          // pemilik task
+  created_by: number | null    // siapa yang bikin
+  created_at: Date
+  updated_at: Date
+}
